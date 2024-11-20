@@ -1,42 +1,52 @@
 from flask import Flask, request, jsonify
 import joblib
-import numpy as np
 import logging
 
 # Initialize Flask app
 app = Flask(__name__)
 
 # Set up logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger()
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Load the trained model from the specified path
-model = joblib.load('models/trained_models/logistic_regression_model.joblib')
+# Load the pre-trained model
+MODEL_PATH = 'models/trained_models/logistic_regression_model.joblib'
+model = joblib.load(MODEL_PATH)
 
-# Define the API endpoint for prediction
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        # Get the JSON data from the request
+        # Parse JSON request
         data = request.get_json()
+        if not data:
+            raise ValueError("No JSON data provided in the request.")
 
-        # Ensure the data is in the expected format
-        if not data or 'features' not in data:
-            return jsonify({"error": "Invalid input data"}), 400
+        # Extract 'features' from the request data
+        features = data.get('features')
+        if not features:
+            raise ValueError("Missing 'features' in request data")
 
-        # Extract the features and make prediction
-        features = np.array(data['features']).reshape(1, -1)  # Reshape if necessary
-        prediction = model.predict(features)
-        prediction_proba = model.predict_proba(features)[:, 1]  # Assuming binary classification
+        # Ensure that features is a list or array
+        if not isinstance(features, list):
+            raise ValueError("'features' must be a list of numerical values.")
 
-        # Log the prediction and return the result
-        logger.info(f"Prediction: {prediction}, Probability: {prediction_proba[0]}")
-        return jsonify({'prediction': int(prediction[0]), 'probability': float(prediction_proba[0])})
+        # Perform prediction
+        prediction = model.predict([features])
+        response = {'prediction': prediction[0]}
 
+        logging.info(f"Prediction made successfully: {response}")
+        return jsonify(response)
+    
+    except ValueError as e:
+        logging.error(f"Input validation error: {e}")
+        return jsonify({'error': str(e)}), 400
     except Exception as e:
-        logger.error(f"Error: {str(e)}")
-        return jsonify({"error": "Internal Server Error"}), 500
+        logging.error(f"Unexpected error during prediction: {e}")
+        return jsonify({'error': "An unexpected error occurred."}), 500
 
-# Run the Flask app
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+# Default route
+@app.route('/')
+def home():
+    return jsonify({'message': 'Fraud Detection API is running'})
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5000, debug=True)
