@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraud Summary</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Fraud Detection Summary</h1>
+        <div>
+            <p>Total Transactions: {{ summary.total_transactions }}</p>
+            <p>Fraud Cases: {{ summary.fraud_cases }}</p>
+            <p>Fraud Percentage: {{ summary.fraud_percentage }}%</p>
+        </div>
+        <p><a href="/">Go Home</a></p>
+    </div>
+</body>
+</html>

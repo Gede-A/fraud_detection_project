@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraud Detection Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h2>FraudDetect</h2>
+            </div>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('get_summary') }}">Fraud Summary</a></li>
+                <li><a href="/dashboard">Dashboard</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="welcome-section">
+            <h1>Welcome to the Fraud Detection Dashboard</h1>
+            <p class="intro-text">Analyze and monitor fraud detection trends with ease. Explore our interactive dashboard for detailed insights into fraud cases.</p>
+            
+            <div class="action-buttons">
+                <a href="{{ url_for('get_summary') }}" class="button">View Fraud Summary</a>
+                <a href="/dashboard" class="button">View Dashboard</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 FraudDetect. All rights reserved.</p>
+    </footer>
+</body>
+</html>
